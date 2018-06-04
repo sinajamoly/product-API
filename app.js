@@ -2,7 +2,18 @@ const express = require('express');
 const app = express();
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 
+
+// MONGOO CONNECT--------------------------------------------------
+// mongoose.connect('mongodb+srv://node-rest' + process.env.MONGO_ATLAS_PW + '@node-rest-shop-yxcjh.mongodb.net/test?retryWrites=true',{
+//     // useMongoClient: true
+// })
+mongoose.connect('mongodb+srv://node-rest:node-rest@node-rest-shop-yxcjh.mongodb.net/test?retryWrites=true',{
+    // useMongoClient: true
+})
+
+//----------------------------------------------------------------
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
