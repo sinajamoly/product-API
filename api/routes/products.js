@@ -5,16 +5,32 @@ const Product = require('../models/product');
 
 router.get('/', (req, res, next)=>{
     Product.find()
+        .select('name price _id')
         .exec()
         .then(docs=>{
-            console.log(docs);
-            if(docs.length >= 0){
-                res.status(200).json(docs);
-            }else{
-                res.status(404).json({
-                    message: 'no entries found'
+            const response = {
+                count : docs.length,
+                products : docs.map(doc => {
+                    return {
+                        name: doc.name,
+                        price: doc.price,
+                        _id: doc.id,
+                        url: {
+                            request: {
+                                type: 'GET',
+                                url: 'http://localhost:3000/product/'+ doc._id
+                            }
+                        }
+                    }
                 })
             }
+            // if(docs.length >= 0){
+                res.status(200).json(response);
+            // }else{
+            //     res.status(404).json({
+            //         message: 'no entries found'
+            //     })
+            // }
         })
         .catch(err=>{
             console.log(err);
@@ -50,9 +66,12 @@ router.get('/:productId', (req, res, next)=>{
     Product.findById(id)
         .exec()
         .then(doc=>{
-            console.log(doc);
             if(doc){
-                res.status(200).json(doc);
+                res.status(200).json({
+                    type: 'GET',
+                    url: 'http://localhost/products',
+                    product: doc
+                });
             }else{
                 res.status(404).json({message: 'no valid entry found for provided ID'});
             }
@@ -72,8 +91,13 @@ router.patch('/:productId', (req, res, next)=>{
     Product.update({_id: id}, {$set: updateOps})
         .exec()
         .then(result=>{
-            console.log(result);
-            res.status(200).json(result);
+            res.status(200).json({
+                message: 'product updated',
+                request: {
+                    type: 'GET',
+                    url: 'http://localhost:3000/products/' + id
+                }
+            });
         })
         .catch(err=>{
             error: err
@@ -85,7 +109,14 @@ router.delete('/:productId', (req, res, next)=>{
     Product.findOneAndRemove({_id: id})
         .exec()
         .then(result =>{
-            res.status(200).json(result)
+            res.status(200).json({
+                type: 'POST',
+                request: {
+                    type: 'POST',
+                    url: 'http://localhost:3000/products',
+                    body: {name: 'String', price: 'Number'}
+                }
+            })
         })
         .catch(err=>{
             console.log(err);
