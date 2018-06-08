@@ -15,6 +15,8 @@ mongoose.connect('mongodb+srv://node-rest:node-rest@node-rest-shop-yxcjh.mongodb
 
 //----------------------------------------------------------------
 app.use(morgan('dev'));
+app.use('/uploads', express.static('uploads'));
+//
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
