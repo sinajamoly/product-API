@@ -35,7 +35,8 @@ const productRoutes = require('./api/routes/products');
 app.use('/products', productRoutes);
 const orderRoutes = require('./api/routes/orders');
 app.use('/orders', orderRoutes);
-
+const userRoute = require('./api/routes/user');
+app.use('/user', userRoute);
 
 
 app.use((req, res, next)=>{
